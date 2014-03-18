@@ -1,0 +1,49 @@
+---
+
+- name: Download Magento in given Version   
+  tags: magento
+  local_action: get_url 
+    url=http://www.magentocommerce.com/downloads/assets/{{ magento_version }}/magento-{{ magento_version }}.tar.gz 
+    dest={{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz
+  when: magento_download == 'yes'
+
+- name: Extract Magento  
+  tags: magento
+  unarchive: 
+    src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz" 
+    dest={{ magento_install_tmp_dir }}
+  when: magento_download == 'yes'
+
+- name: Copy magento from local 
+  tags: magento
+  copy: 
+    src=magento
+    dest={{ magento_install_tmp_dir }}
+  when: magento_download != "yes"
+
+- name: Move to Magento-Root-Dir
+  tags: magento
+  shell: "rsync -av {{ magento_install_tmp_dir }}/magento/* {{ magento_root }}/"
+
+- name: Change User
+  tags: magento
+  shell: "chown -R {{ magento_webuser}}:{{ magento_webgroup }} {{ magento_root }}/*"
+
+- name: Create Magento-Install script
+  tags: magento
+  template: src=magento-install.j2 dest={{ magento_install_tmp_dir }}/magento-install.sh
+
+- name: remove app/etc/local.xml if exists
+  tags: magento
+  file: path="{{ magento_root}}/app/etc/local.xml" state=absent
+
+- name: Install Magento
+  tags: magento
+  command: "sh {{ magento_install_tmp_dir }}/magento-install.sh"  
+
+- include: "modman.yml"
+  tags: 
+    - magento
+    - modman
+  when: magento_modman == "yes"
+  

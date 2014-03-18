@@ -1,0 +1,32 @@
+---
+
+- name: modman link 
+  shell: 
+    chdir={{ magento_root }}
+    free_form=yes 
+    rm {{ magento_root }}/.modman/* ;
+    {{ magento_modman_bin_dir }}/modman link {{item.stdout}}
+  ignore_errors: yes
+  with_items: magento_modman_extensions.results
+  notify:
+    - modman deploy-all
+    - modman repair
+    - modman clean
+
+- name: modman deploy-all
+  shell:
+    chdir={{ magento_root }}
+    free_form=yes
+    {{ magento_modman_bin_dir }}/modman deploy-all --force
+
+- name: modman repair
+  shell:
+    chdir={{ magento_root }}
+    free_form=yes 
+    {{ magento_modman_bin_dir }}/modman repair
+
+- name: modman clean
+  shell:
+    chdir={{ magento_root }} 
+    free_form=yes
+    {{ magento_modman_bin_dir }}/modman clean

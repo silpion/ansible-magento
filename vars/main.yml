@@ -1,0 +1,3 @@
+---
+# vars file for magento
+magento_download_tmp_dir: "{{inventory_dir}}/roles/magento/tmp"

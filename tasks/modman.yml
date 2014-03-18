@@ -1,0 +1,67 @@
+---
+
+- name: Install modman
+  tags: 
+    - magento 
+    - modman
+  get_url:
+    url=https://raw.github.com/colinmollenhour/modman/master/modman
+    dest={{ magento_modman_bin_dir }}/modman
+    mode="0755"
+    owner={{ magento_webuser}}
+    group={{ magento_webgroup }}
+
+- name: check modman dir exists
+  tags: 
+    - magento 
+    - modman
+  stat: path={{ magento_root }}/.modman
+  register: check_modman
+
+- name: modman Init magento
+  tags: 
+    - magento 
+    - modman
+  command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
+  when: check_modman.stat.exists == false
+
+- name: intall git Debian 
+  tags: 
+    - magento 
+    - modman
+  action: apt pkg='git' state=installed
+  when: ansible_pkg_mgr  == 'apt'
+
+- name: intall git RedHat
+  tags: 
+    - magento 
+    - modman
+  action: apt name='git' state=installed
+  when: ansible_pkg_mgr == 'yum'
+
+- name: install Extensions from git 
+  tags: 
+    - magento 
+    - modman
+  git:
+    repo="{{item.repo}}"
+    dest="{{item.dest}}"
+    version="{{item.version|default('HEAD')}}"
+    remote="{{item.remote|default('origin')}}"
+    key_file="{{item.key_file|default(None)}}"
+    ssh_opts="{{item.ssh_opts|default(None)}}"
+    accept_hostkey="{{item.accept_hostkey|default('no')|bool}}"
+    bare="{{item.bare|default('no')|bool}}"
+    depth="{{item.depth|default(0)}}"
+    executable="{{item.executable|default('')}}"
+    reference="{{item.reference|default('')}}"
+    update="{{item.update|default('yes')|bool}}"
+    force="{{item.force |default('yes')|bool}}"
+  with_items: magento_modman_extensions_git
+
+- name: add extensions to register 
+  shell: echo "{{item.dest}}"
+  with_items: magento_modman_extensions_git
+  register: magento_modman_extensions
+  notify: modman link
+
