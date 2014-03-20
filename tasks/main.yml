@@ -41,6 +41,22 @@
   tags: magento
   command: "sh {{ magento_install_tmp_dir }}/magento-install.sh"  
 
+- name: download magento patch files 
+  tags: magento
+  get_url: 
+    url={{ item.url }}
+    dest={{ magento_root}}/
+  with_items: magento_patch_files
+    
+- name: create patch-script
+  tags: magento
+  template: src=patch.j2 dest={{ magento_root}}/patch.sh
+
+- name: applay patches
+  tags: magento
+  command:
+    chdir={{ magento_root }} sh patch.sh
+
 - include: "modman.yml"
   tags: 
     - magento

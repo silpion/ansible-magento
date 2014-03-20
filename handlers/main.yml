@@ -1,10 +1,12 @@
 ---
 
-- name: modman link 
+- name: rm links 
+  shell:  rm -f {{ magento_root }}/.modman/*
+
+- name: modman link all
   shell: 
     chdir={{ magento_root }}
     free_form=yes 
-    rm {{ magento_root }}/.modman/* ;
     {{ magento_modman_bin_dir }}/modman link {{item.stdout}}
   ignore_errors: yes
   with_items: magento_modman_extensions.results
@@ -12,8 +14,8 @@
     - modman deploy-all
     - modman repair
     - modman clean
-
 - name: modman deploy-all
+
   shell:
     chdir={{ magento_root }}
     free_form=yes

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+
+
+applay_patch()
+{
+  search=$(grep -B 2 '^__PATCHFILE_FOLLOWS__' $1 | sed -e '/__PATCHFILE_FOLLOWS__/d' | sed '/^$/d')
+  grep "$search" app/etc/applied.patches.list  
+  res=$?
+
+  if [ $res -eq 1  ]; then 
+    sh $1
+  fi
+}
+
+
+{% for v in magento_patch_files %}
+  applay_patch "{{ v.name }}"
+{% endfor %}

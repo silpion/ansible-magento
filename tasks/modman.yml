@@ -63,5 +63,7 @@
   shell: echo "{{item.dest}}"
   with_items: magento_modman_extensions_git
   register: magento_modman_extensions
-  notify: modman link
+  notify: 
+    - rm links
+    - modman link all
 
