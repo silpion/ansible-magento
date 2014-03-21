@@ -25,19 +25,11 @@
   command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
   when: check_modman.stat.exists == false
 
-- name: intall git Debian 
+- name: intall git 
   tags: 
     - magento 
     - modman
-  action: apt pkg='git' state=installed
-  when: ansible_pkg_mgr  == 'apt'
-
-- name: intall git RedHat
-  tags: 
-    - magento 
-    - modman
-  action: apt name='git' state=installed
-  when: ansible_pkg_mgr == 'yum'
+  action: "{{ ansible_pkg_mgr }} state=installed name=git"
 
 - name: install Extensions from git 
   tags: 
