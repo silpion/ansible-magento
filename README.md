@@ -1,6 +1,6 @@
 # ansible magento
-
-install magento and can install modman and link modman extensions
+can install/configure magento in different versions ( optional install  patches ).  
+Additional can install modman, install Extensions from git and link given modman Extensions.
 
 ## Variables
 
@@ -62,7 +62,14 @@ magento_configs: []
    use_secure_admin: "no"
    skip_url_validation: "yes"
 ```
+### magento_patch_files: []
+list for magento patches
 
+Example (will install magento-patch for php5.4  magento(1.7.0.2)):
+```
+magento_patch_files: 
+  - url: "http://www.magentocommerce.com/downloads/assets/ce_patches/PATCH_SUPEE-2629_EE_1.12.0.0_v1.sh"
+```
 ### magento_modman: "yes"
 if is set to yes it will install modman and install given extensions (only from git)
 
@@ -102,6 +109,21 @@ magento_modman_extensions_git:
   - repo: "https://github.com/path/to/repo2.git
     dest: "/var/www/extensions/repo2"
     remote: "test"
+```
+
+### magento_modman_extensions_other: []
+list of non-git extensions for modman to link
+
+Required Variables in list: 
+```
+dest
+```
+
+Example:
+```
+magento_modman_extensions_other:
+  - dest: "/var/www/extensions/extension"
+  - dest: "/var/www/extensions/extension2"
 ```
 
 ## Dependencies
