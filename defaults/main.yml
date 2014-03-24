@@ -16,3 +16,4 @@ magento_patch_files: []
 magento_modman: "yes"
 magento_modman_bin_dir: "/root/bin"
 magento_modman_extensions_git: []
+magento_modman_extensions_other: []

@@ -14,12 +14,12 @@
     - modman deploy-all
     - modman repair
     - modman clean
-- name: modman deploy-all
 
+- name: modman deploy-all
   shell:
     chdir={{ magento_root }}
     free_form=yes
-    {{ magento_modman_bin_dir }}/modman deploy-all --force
+    "{{ magento_modman_bin_dir }}/modman" deploy-all --force
 
 - name: modman repair
   shell:

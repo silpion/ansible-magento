@@ -25,7 +25,7 @@
   command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
   when: check_modman.stat.exists == false
 
-- name: intall git 
+- name: install git 
   tags: 
     - magento 
     - modman
@@ -53,7 +53,9 @@
 
 - name: add extensions to register 
   shell: echo "{{item.dest}}"
-  with_items: magento_modman_extensions_git
+  with_items: 
+    - "{{ magento_modman_extensions_git }}"
+    - "{{ magento_modman_extensions_other }} "
   register: magento_modman_extensions
   notify: 
     - rm links

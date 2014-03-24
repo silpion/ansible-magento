@@ -5,12 +5,16 @@
 
 applay_patch()
 {
-  search=$(grep -B 2 '^__PATCHFILE_FOLLOWS__' $1 | sed -e '/__PATCHFILE_FOLLOWS__/d' | sed '/^$/d')
-  grep "$search" app/etc/applied.patches.list  
-  res=$?
-
-  if [ $res -eq 1  ]; then 
+  if [ ! -f app/etc/applied.patches.list ]; then
     sh $1
+  else 
+    search=$(grep -B 2 '^__PATCHFILE_FOLLOWS__' $1 | sed -e '/__PATCHFILE_FOLLOWS__/d' | sed '/^$/d')
+    grep "$search" app/etc/applied.patches.list  
+    res=$?
+
+    if [ $res -eq 1  ]; then 
+      sh $1
+    fi
   fi
 }
 
