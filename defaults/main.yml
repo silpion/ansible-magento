@@ -3,7 +3,8 @@
 
 magento_root: /var/www/magento
 magento_download: "yes"
-magento_install_tmp_dir: /tmp
+magento_download_tmp_dir: "/tmp"
+magento_install_tmp_dir: "/tmp"
 magento_version: "1.7.0.2" 
 
 magento_webuser: "www-data"
