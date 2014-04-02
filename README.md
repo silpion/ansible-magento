@@ -96,7 +96,7 @@ bare: "no"
 depth: 0
 executable: ""
 reference: ""
-update: "yes"
+gitupdate: "yes"
 force: "yes"
 
 ```

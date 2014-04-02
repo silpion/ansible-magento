@@ -31,6 +31,7 @@
     - modman
   action: "{{ ansible_pkg_mgr }} state=installed name=git"
 
+
 - name: install Extensions from git 
   tags: 
     - magento 
@@ -42,14 +43,15 @@
     remote="{{item.remote|default('origin')}}"
     key_file="{{item.key_file|default(None)}}"
     ssh_opts="{{item.ssh_opts|default(None)}}"
-    accept_hostkey="{{item.accept_hostkey|default('no')|bool}}"
-    bare="{{item.bare|default('no')|bool}}"
+    accept_hostkey="{{item.accept_hostkey|default('no')}}"
+    bare="{{item.bare|default('no')}}"
     depth="{{item.depth|default(0)}}"
     executable="{{item.executable|default('')}}"
     reference="{{item.reference|default('')}}"
-    update="{{item.update|default('yes')|bool}}"
-    force="{{item.force |default('yes')|bool}}"
+    force="{{item.force |default('yes')}}"
+    update="{{item.gitupdate|default('yes')}}"
   with_items: magento_modman_extensions_git
+    
 
 - name: add extensions to register 
   shell: echo "{{item.dest}}"
