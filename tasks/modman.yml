@@ -25,6 +25,16 @@
   command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
   when: check_modman.stat.exists == false
 
+- name: verify .modman dir has correct permissions
+  tags: 
+    - magento 
+    - modman
+  file:
+    group={{ magento_webuser }}
+    owner={{ magento_webuser }}
+    mode={{ magento_dir_mode }}
+    path="{{ magento_root }}/.modman"
+
 - name: install git 
   tags: 
     - magento 

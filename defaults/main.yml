@@ -9,6 +9,7 @@ magento_version: "1.7.0.2"
 
 magento_webuser: "www-data"
 magento_webgroup: "www-data"
+magento_dir_mode: "0771"
 
 magento_configs: []
 
