@@ -2,6 +2,8 @@
 
 - name: rm links 
   shell:  rm -f {{ magento_root }}/.modman/*
+  notify:
+    - modman clean
 
 - name: modman link all
   shell: 
@@ -13,7 +15,13 @@
   notify:
     - modman deploy-all
     - modman repair
-    - modman clean
+    - verify permissions
+
+- name: modman clean
+  shell:
+    chdir={{ magento_root }} 
+    free_form=yes
+    {{ magento_modman_bin_dir }}/modman clean
 
 - name: modman deploy-all
   shell:
@@ -27,8 +35,13 @@
     free_form=yes 
     {{ magento_modman_bin_dir }}/modman repair
 
-- name: modman clean
-  shell:
+- name: verify permissions
+  shell: >
     chdir={{ magento_root }} 
     free_form=yes
-    {{ magento_modman_bin_dir }}/modman clean
+    find . -type {{ item.type }} -exec 
+    install -{{ item.type }}  
+    -m {{ item.mode }} 
+    -o {{ item.owner|default( magento_webuser )  }} 
+    -g {{ item.group|default( magento_webgroup )  }} {} \; 
+  with_items: magento_permissions_list
