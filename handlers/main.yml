@@ -5,6 +5,12 @@
   notify:
     - modman clean
 
+- name: modman clean
+  shell:
+    chdir={{ magento_root }} 
+    free_form=yes
+    {{ magento_modman_bin_dir }}/modman clean
+
 - name: modman link all
   shell: 
     chdir={{ magento_root }}
@@ -17,11 +23,6 @@
     - modman repair
     - verify permissions
 
-- name: modman clean
-  shell:
-    chdir={{ magento_root }} 
-    free_form=yes
-    {{ magento_modman_bin_dir }}/modman clean
 
 - name: modman deploy-all
   shell:
