@@ -21,7 +21,6 @@
   notify:
     - modman deploy-all
     - modman repair
-    - verify permissions
 
 
 - name: modman deploy-all
@@ -46,3 +45,8 @@
     -o {{ item.owner|default( magento_webuser )  }} 
     -g {{ item.group|default( magento_webgroup )  }} {} \; 
   with_items: magento_permissions_list
+
+- name: run magento install
+  shell: 
+    free_form=yes
+    sh {{ magento_install_tmp_dir }}/magento-install.sh

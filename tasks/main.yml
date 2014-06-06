@@ -28,6 +28,9 @@
 - name: Change User
   tags: magento
   shell: "chown -R {{ magento_webuser}}:{{ magento_webgroup }} {{ magento_root }}/*"
+  notify:
+    - run magento install
+    - verify permissions
 
 - name: Create Magento-Install script
   tags: magento
@@ -37,9 +40,10 @@
   tags: magento
   file: path="{{ magento_root}}/app/etc/local.xml" state=absent
 
-- name: Install Magento
-  tags: magento
-  command: "sh {{ magento_install_tmp_dir }}/magento-install.sh"  
+
+#- name: Install Magento
+#  tags: magento
+#  command: "sh {{ magento_install_tmp_dir }}/magento-install.sh"  
 
 - name: download magento patch files 
   tags: magento
