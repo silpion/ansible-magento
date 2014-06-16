@@ -32,6 +32,26 @@
     - modman
   action: "{{ ansible_pkg_mgr }} state=installed name=git"
 
+- name: check extensions already checked out
+  tags: 
+    - magento 
+    - modman
+  stat: path={{item.dest}}
+  register: magento_modman_extensions_dirs
+  with_items: magento_modman_extensions_git
+
+- name: update remote
+  tags: 
+    - magento 
+    - modman
+  shell: >
+    chdir={{item[1].dest}}
+    free_form=yes
+    git remote set-url {{item[1].remote|default('origin')}} {{ item[1].repo }}
+  when: item[0].stat.isdir is defined and item[0].stat.isdir == true
+  with_together: 
+    - magento_modman_extensions_dirs.results
+    - magento_modman_extensions_git
 
 - name: install Extensions from git 
   tags: 
