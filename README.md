@@ -8,8 +8,14 @@ Additional can install modman, install Extensions from git and link given modman
 set magento-root dir 
 
 ### magento_download: "yes"
-if you have for example special magento-version local you can put it into files directory and 
-configure magento_download: "no"
+if you have for example special magento-version local you can put it into directory specified 
+in magento_copy_local_dir: and configure magento_download: "no"
+
+### magento_copy_local_dir: ""
+difine local magento source
+
+### magento_download_tmp_dir: "/tmp"
+specify where magento should be downloaded local
 
 ### magento_install_tmp_dir: /tmp 
 tmp - directory on remote for installation stuff
@@ -21,12 +27,26 @@ configure magento-version for installation
 ### magento_webgroup: "www-data" 
 set magento webuser and group
 
-### magento_configs: []
+### magento_permissions_list: []
+set permissions for example for directorys and files
+
+Example:
+
+```
+magento_permissions_list:
+  - mode: "2771"
+    type: "d"
+  - mode: "0644"
+    type: "f"
+``` 
+
+### magento_config: []
 setup magento install-configuration
 
 Defaults:
+
 ```
-magento_configs: []
+magento_config: []
    license_agreement_accepted: "yes"
    locale: "de_DE"
    timezone: "Europe/Berlin"
@@ -50,8 +70,9 @@ magento_configs: []
 ```
 
 Example ( change db access and disable secure ):
+
 ```
-magento_configs: []
+magento_config: []
    db_host: "localhost"
    db_name: "test"
    db_user: "testuser"
@@ -66,6 +87,7 @@ magento_configs: []
 list for magento patches
 
 Example (will install magento-patch for php5.4  magento(1.7.0.2)):
+
 ```
 magento_patch_files: 
   - url: "http://www.magentocommerce.com/downloads/assets/ce_patches/PATCH_SUPEE-2629_EE_1.12.0.0_v1.sh"
@@ -80,12 +102,14 @@ where modman should be installed ?
 list of extensions witch will be cloned from git-repository and linked into magento via modman
 
 Required Variables in list:
+
 ```
 repo
 dest
 ```
 
 Optional variables (defaults) 
+
 ```
 version: "HEAD"
 remote: "origin"
@@ -102,6 +126,7 @@ force: "yes"
 ```
 
 Example:
+
 ```
 magento_modman_extensions_git:
   - repo: "https://github.com/path/to/repo.git"
@@ -115,11 +140,13 @@ magento_modman_extensions_git:
 list of non-git extensions for modman to link
 
 Required Variables in list: 
+
 ```
 dest
 ```
 
 Example:
+
 ```
 magento_modman_extensions_other:
   - dest: "/var/www/extensions/extension"
