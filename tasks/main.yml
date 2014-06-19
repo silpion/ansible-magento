@@ -2,24 +2,24 @@
 
 - name: Download Magento in given Version   
   tags: magento
+  when: magento_download == 'yes'
   local_action: get_url 
     url=http://www.magentocommerce.com/downloads/assets/{{ magento_version }}/magento-{{ magento_version }}.tar.gz 
     dest={{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz
-  when: magento_download == 'yes'
 
 - name: Extract Magento  
   tags: magento
+  when: magento_download == 'yes'
   unarchive: 
     src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz" 
     dest={{ magento_install_tmp_dir }}
-  when: magento_download == 'yes'
 
 - name: Copy magento from local 
   tags: magento
-  copy: 
-    src=magento
-    dest={{ magento_install_tmp_dir }}
   when: magento_download != "yes"
+  copy: 
+    src={{ magento_copy_local_dir }}
+    dest={{ magento_install_tmp_dir }}
 
 - name: Move to Magento-Root-Dir
   tags: magento
@@ -27,36 +27,37 @@
 
 - name: Change User
   tags: magento
-  shell: "chown -R {{ magento_webuser}}:{{ magento_webgroup }} {{ magento_root }}/*"
+  shell: "chown -R {{ magento_webuser }}:{{ magento_webgroup }} {{ magento_root }}/*"
   notify:
     - run magento install
     - verify permissions
 
 - name: Create Magento-Install script
   tags: magento
-  template: src=magento-install.j2 dest={{ magento_install_tmp_dir }}/magento-install.sh
+  template: 
+    src=magento-install.j2 
+    dest={{ magento_install_tmp_dir }}/magento-install.sh
 
-- name: remove app/etc/local.xml if exists
+- name: Remove app/etc/local.xml if exists
   tags: magento
-  file: path="{{ magento_root}}/app/etc/local.xml" state=absent
+  file: 
+    state=absent
+    path="{{ magento_root }}/app/etc/local.xml" 
 
-
-#- name: Install Magento
-#  tags: magento
-#  command: "sh {{ magento_install_tmp_dir }}/magento-install.sh"  
-
-- name: download magento patch files 
+- name: Download magento patch files 
   tags: magento
+  with_items: magento_patch_files
   get_url: 
     url={{ item.url }}
     dest={{ magento_root}}/
-  with_items: magento_patch_files
     
-- name: create patch-script
+- name: Create patch-script
   tags: magento
-  template: src=patch.j2 dest={{ magento_root}}/patch.sh
+  template: 
+    src=patch.j2 
+    dest={{ magento_root }}/patch.sh
 
-- name: applay patches
+- name: Applay patches
   tags: magento
   command:
     chdir={{ magento_root }} sh patch.sh

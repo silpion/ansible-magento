@@ -1,18 +1,17 @@
 ---
-
-
-magento_root: /var/www/magento
+magento_root: "/var/www/magento"
 magento_download: "yes"
 magento_download_tmp_dir: "/tmp"
 magento_install_tmp_dir: "/tmp"
 magento_version: "1.7.0.2" 
+magento_copy_local_dir: ""
 
 magento_webuser: "www-data"
 magento_webgroup: "www-data"
 
 magento_permissions_list: []
 
-magento_configs: []
+magento_config: []
 
 magento_patch_files: []
 

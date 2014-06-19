@@ -1,22 +1,22 @@
 #!/bin/bash
 
 /usr/bin/php -f {{ magento_root }}/install.php -- \
-  --license_agreement_accepted "{{ magento_configs.license_agreement_accepted| default('yes') }}" \
-  --locale "{{ magento_configs.locale | default ('de_DE') }}" \
-  --timezone "{{ magento_configs.timezone | default('Europe/Berlin') }}"  \
-  --default_currency "{{ magento_configs.default_currency | default('EUR') }}" \
-  --db_host "{{ magento_configs.db_host | default('localhost') }}" \
-  --db_name "{{ magento_configs.db_name | default('magento') }}" \
-  --db_user "{{ magento_configs.db_user | default('magento') }}" \
-  --db_pass "{{ magento_configs.db_pass | default('magento') }}" \
-  --url "{{ magento_configs.url |default('http://localhost:8080/') }}" \
-   {% if magento_configs.skip_url_validation == "yes" %} --skip_url_validation  \{% endif %}
-   --use_rewrites "{{ magento_configs.use_rewrites | default('yes')}}" \
-     --use_secure "{{ magento_configs.use_secure | default('yes') }}" \
-     --secure_base_url "{{ magento_configs.secure_base_url |default('https://localhost:8080/') }}" \
-   --use_secure_admin "{{ magento_configs.use_secure_admin| default('yes') }}" \
-   --admin_firstname "{{ magento_configs.admin_firstname | default('Magento') }}" \
-   --admin_lastname "{{ magento_configs.admin_lastname | default('Admin')}}" \
-   --admin_email "{{ magento_configs.admin_email | default('magento@test.de')}}" \
-   --admin_username "{{ magento_configs.admin_username | default('admin') }}"  \
-   --admin_password "{{ magento_configs.admin_password | default('magento12')  }}" 
+  --license_agreement_accepted "{{ magento_config.license_agreement_accepted| default('yes') }}" \
+  --locale "{{ magento_config.locale | default ('de_DE') }}" \
+  --timezone "{{ magento_config.timezone | default('Europe/Berlin') }}"  \
+  --default_currency "{{ magento_config.default_currency | default('EUR') }}" \
+  --db_host "{{ magento_config.db_host | default('localhost') }}" \
+  --db_name "{{ magento_config.db_name | default('magento') }}" \
+  --db_user "{{ magento_config.db_user | default('magento') }}" \
+  --db_pass "{{ magento_config.db_pass | default('magento') }}" \
+  --url "{{ magento_config.url |default('http://localhost:8080/') }}" \
+   {% if magento_config.skip_url_validation == "yes" %} --skip_url_validation  \{% endif %}
+   --use_rewrites "{{ magento_config.use_rewrites | default('yes')}}" \
+     --use_secure "{{ magento_config.use_secure | default('yes') }}" \
+     --secure_base_url "{{ magento_config.secure_base_url |default('https://localhost:8080/') }}" \
+   --use_secure_admin "{{ magento_config.use_secure_admin| default('yes') }}" \
+   --admin_firstname "{{ magento_config.admin_firstname | default('Magento') }}" \
+   --admin_lastname "{{ magento_config.admin_lastname | default('Admin')}}" \
+   --admin_email "{{ magento_config.admin_email | default('magento@test.de')}}" \
+   --admin_username "{{ magento_config.admin_username | default('admin') }}"  \
+   --admin_password "{{ magento_config.admin_password | default('magento12')  }}" 
