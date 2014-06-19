@@ -1,9 +1,9 @@
 ---
 
 - name: rm links 
-  shell:  rm -f {{ magento_root }}/.modman/*
   notify:
     - modman clean
+  shell:  rm -f {{ magento_root }}/.modman/*
 
 - name: modman clean
   shell:
@@ -12,16 +12,15 @@
     {{ magento_modman_bin_dir }}/modman clean
 
 - name: modman link all
-  shell: 
-    chdir={{ magento_root }}
-    free_form=yes 
-    {{ magento_modman_bin_dir }}/modman link {{item.stdout}}
   ignore_errors: yes
   with_items: magento_modman_extensions.results
   notify:
     - modman deploy-all
     - modman repair
-
+  shell: 
+    chdir={{ magento_root }}
+    free_form=yes 
+    {{ magento_modman_bin_dir }}/modman link {{item.stdout}}
 
 - name: modman deploy-all
   shell:
@@ -36,6 +35,7 @@
     {{ magento_modman_bin_dir }}/modman repair
 
 - name: verify permissions
+  with_items: magento_permissions_list
   shell: >
     chdir={{ magento_root }} 
     free_form=yes
@@ -44,7 +44,6 @@
     -m {{ item.mode }} 
     -o {{ item.owner|default( magento_webuser )  }} 
     -g {{ item.group|default( magento_webgroup )  }} {} \; 
-  with_items: magento_permissions_list
 
 - name: run magento install
   shell: 
