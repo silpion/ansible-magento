@@ -10,9 +10,9 @@
 - name: Extract Magento  
   tags: magento
   when: magento_download == 'yes'
-  unarchive: 
+  local_action: unarchive 
     src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz" 
-    dest={{ magento_install_tmp_dir }}
+    dest={{ magento_download_tmp_dir }}
 
 - name: Copy magento from local 
   tags: magento
@@ -23,11 +23,15 @@
 
 - name: Move to Magento-Root-Dir
   tags: magento
-  shell: "rsync -av {{ magento_install_tmp_dir }}/magento/* {{ magento_root }}/"
+  synchronize: 
+    rsync_path="sudo rsync"
+    src={{ magento_download_tmp_dir }}/magento/ 
+    dest={{ magento_root }}/
+    rsync_opts="--chmod=D2750,--chmod=F640"
 
 - name: Change User
   tags: magento
-  shell: "chown -R {{ magento_webuser }}:{{ magento_webgroup }} {{ magento_root }}/*"
+  shell: "chown -R {{ magento_webuser }}:{{ magento_webgroup }} {{ magento_root }}"
   notify:
     - run magento install
     - verify permissions
@@ -67,4 +71,3 @@
     - magento
     - modman
   when: magento_modman == "yes"
-  
