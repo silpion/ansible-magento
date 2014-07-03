@@ -34,18 +34,18 @@
     free_form=yes 
     {{ magento_modman_bin_dir }}/modman repair
 
-- name: verify permissions
-  with_items: magento_permissions_list
-  shell: >
-    chdir={{ magento_root }} 
-    free_form=yes
-    find . -type {{ item.type }} -exec 
-    install -{{ item.type }}  
-    -m {{ item.mode }} 
-    -o {{ item.owner|default( magento_webuser )  }} 
-    -g {{ item.group|default( magento_webgroup )  }} {} \; 
-
 - name: run magento install
   shell: 
     free_form=yes
     sh {{ magento_install_tmp_dir }}/magento-install.sh
+
+- name: verify permissions
+  with_items: magento_permissions_list
+  shell: >
+    chdir={{ item.dir}} 
+    free_form=yes
+    find . -type {{ item.type }} -exec 
+    chmod {{ item.mode }} {}  
+    chown {{ item.owner|default( magento_webuser ) }}:{{ item.group|default( magento_webgroup ) }} {} \; 
+
+
