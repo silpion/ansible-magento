@@ -27,7 +27,9 @@
     rsync_path="sudo rsync"
     src={{ magento_download_tmp_dir }}/magento/ 
     dest={{ magento_root }}/
-    rsync_opts="--chmod=D2750,--chmod=F640"
+    rsync_opts="-p,--chmod=Du=rwx,--chmod=Dg=rx,--chmod=Do=,--chmod=Fu=rw,--chmod=Fg=r,--chmod=Fo="
+
+    #rsync_opts="--chmod=D2750,--chmod=F640"
 
 - name: Change User
   tags: magento
