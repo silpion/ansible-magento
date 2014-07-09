@@ -10,10 +10,10 @@ magento_webuser: "www-data"
 magento_webgroup: "www-data"
 
 magento_permissions_list:
-  - mode: "2771"
+  - mode: "771"
     dir: "{{ magento_root}}/media"
     type: "d"
-  - mode: "2771"
+  - mode: "771"
     dir: "{{ magento_root}}/var"
     type: "d"
   - mode: "664"
