@@ -46,7 +46,8 @@
     free_form=yes
     chown -R {{ magento_webuser }}:{{ magento_webgroup }} {{ magento_root }};
     find . -type {{ item.type }} -exec 
-    chmod {{ item.mode }} {}  
-    chown {{ item.owner|default( magento_webuser ) }}:{{ item.group|default( magento_webgroup ) }} {} \; 
+    chmod {{ item.mode }} {} \; ;
+    find . -type {{ item.type }} -exec
+    chown {{ item.owner }}:{{ item.group|default( magento_webgroup ) }} {} \; 
 
 
