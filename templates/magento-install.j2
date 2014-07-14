@@ -10,13 +10,15 @@
   --db_user "{{ magento_config.db_user | default('magento') }}" \
   --db_pass "{{ magento_config.db_pass | default('magento') }}" \
   --url "{{ magento_config.url |default('http://localhost:8080/') }}" \
-   {% if magento_config.skip_url_validation == "yes" %} --skip_url_validation  \{% endif %}
-   --use_rewrites "{{ magento_config.use_rewrites | default('yes')}}" \
-     --use_secure "{{ magento_config.use_secure | default('yes') }}" \
-     --secure_base_url "{{ magento_config.secure_base_url |default('https://localhost:8080/') }}" \
-   --use_secure_admin "{{ magento_config.use_secure_admin| default('yes') }}" \
-   --admin_firstname "{{ magento_config.admin_firstname | default('Magento') }}" \
-   --admin_lastname "{{ magento_config.admin_lastname | default('Admin')}}" \
-   --admin_email "{{ magento_config.admin_email | default('magento@test.de')}}" \
-   --admin_username "{{ magento_config.admin_username | default('admin') }}"  \
-   --admin_password "{{ magento_config.admin_password | default('magento12')  }}" 
+  {% if magento_config.skip_url_validation == "yes" %} --skip_url_validation  \{% endif %}
+  --use_rewrites "{{ magento_config.use_rewrites | default('yes')}}" \
+  --use_secure "{{ magento_config.use_secure | default('yes') }}" \
+  --secure_base_url "{{ magento_config.secure_base_url |default('https://localhost:8080/') }}" \
+  --encryption_key "{{ magento_config.encryption_key | default() }}" \
+  --use_secure_admin "{{ magento_config.use_secure_admin| default('yes') }}" \
+  --admin_firstname "{{ magento_config.admin_firstname | default('Magento') }}" \
+  --admin_lastname "{{ magento_config.admin_lastname | default('Admin')}}" \
+  --admin_email "{{ magento_config.admin_email | default('magento@test.de')}}" \
+  --admin_username "{{ magento_config.admin_username | default('admin') }}"  \
+  --admin_password "{{ magento_config.admin_password | default('magento12')  }}" 
+  
