@@ -1,8 +1,8 @@
 ---
 
 - name: Install modman
-  tags: 
-    - magento 
+  tags:
+    - magento
     - modman
   get_url:
     url=https://raw.github.com/colinmollenhour/modman/master/modman
@@ -12,39 +12,39 @@
     group={{ magento_webgroup }}
 
 - name: Check modman dir exists
-  tags: 
-    - magento 
+  tags:
+    - magento
     - modman
   register: check_modman
   stat: path={{ magento_root }}/.modman
 
 - name: modman Init magento
-  tags: 
-    - magento 
+  tags:
+    - magento
     - modman
   when: check_modman.stat.exists == false
   command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
 
-- name: Install git 
-  tags: 
-    - magento 
+- name: Install git
+  tags:
+    - magento
     - modman
   action: "{{ ansible_pkg_mgr }} state=installed name=git"
 
 - name: Check extensions already checked out
-  tags: 
-    - magento 
+  tags:
+    - magento
     - modman
   register: magento_modman_extensions_dirs
   with_items: magento_modman_extensions_git
   stat: path={{item.dest}}
 
 - name: Update git remote
-  tags: 
-    - magento 
+  tags:
+    - magento
     - modman
   when: item[0].stat.isdir is defined and item[0].stat.isdir == true
-  with_together: 
+  with_together:
     - magento_modman_extensions_dirs.results
     - magento_modman_extensions_git
   shell: >
@@ -52,9 +52,9 @@
     free_form=yes
     git remote set-url {{item[1].remote|default('origin')}} {{ item[1].repo }}
 
-- name: Install Extensions from git 
-  tags: 
-    - magento 
+- name: Install Extensions from git
+  tags:
+    - magento
     - modman
   with_items: magento_modman_extensions_git
   git:
@@ -72,13 +72,13 @@
     force="{{item.force |default('yes')}}"
     update="{{item.gitupdate|default('yes')}}"
 
-- name: Add extensions to registerd variable 
-  with_items: 
+- name: Add extensions to registerd variable
+  with_items:
     - "{{ magento_modman_extensions_git }}"
     - "{{ magento_modman_extensions_other }} "
   register: magento_modman_extensions
-  notify: 
+  notify:
     - rm links
     - modman link all
-  shell: echo "{{item.dest}}"
+  shell: echo "{{ item.dest }}/{{ item.subdir|default('') }}"
 
