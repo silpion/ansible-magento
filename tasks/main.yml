@@ -1,31 +1,33 @@
 ---
 
-- name: Download Magento in given Version   
+- name: Download Magento in given Version
   tags: magento
   when: magento_download == 'yes'
-  local_action: get_url 
-    url=http://www.magentocommerce.com/downloads/assets/{{ magento_version }}/magento-{{ magento_version }}.tar.gz 
+  local_action: get_url
+    url=http://www.magentocommerce.com/downloads/assets/{{ magento_version }}/magento-{{ magento_version }}.tar.gz
     dest={{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz
 
-- name: Extract Magento  
+- name: Extract Magento
   tags: magento
+  sudo: no
   when: magento_download == 'yes'
-  local_action: unarchive 
-    src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz" 
+  local_action: unarchive
+    src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz"
     dest={{ magento_download_tmp_dir }}
+    mode=0644
 
-- name: Copy magento from local 
+- name: Copy magento from local
   tags: magento
   when: magento_download != "yes"
-  copy: 
+  copy:
     src={{ magento_copy_local_dir }}
     dest={{ magento_install_tmp_dir }}
 
 - name: Move to Magento-Root-Dir
   tags: magento
-  synchronize: 
+  synchronize:
     rsync_path="sudo rsync"
-    src={{ magento_download_tmp_dir }}/magento/ 
+    src={{ magento_download_tmp_dir }}/magento/
     dest={{ magento_root }}/
     rsync_opts="-p,--chmod=Du=rwx,--chmod=Dg=rx,--chmod=Do=,--chmod=Fu=rw,--chmod=Fg=r,--chmod=Fo="
 
@@ -40,27 +42,27 @@
 
 - name: Create Magento-Install script
   tags: magento
-  template: 
-    src=magento-install.j2 
+  template:
+    src=magento-install.j2
     dest={{ magento_install_tmp_dir }}/magento-install.sh
 
 - name: Remove app/etc/local.xml if exists
   tags: magento
-  file: 
+  file:
     state=absent
-    path="{{ magento_root }}/app/etc/local.xml" 
+    path="{{ magento_root }}/app/etc/local.xml"
 
-- name: Download magento patch files 
+- name: Download magento patch files
   tags: magento
   with_items: magento_patch_files
-  get_url: 
+  get_url:
     url={{ item.url }}
     dest={{ magento_root}}/
-    
+
 - name: Create patch-script
   tags: magento
-  template: 
-    src=patch.j2 
+  template:
+    src=patch.j2
     dest={{ magento_root }}/patch.sh
 
 - name: Applay patches
@@ -69,7 +71,7 @@
     chdir={{ magento_root }} sh patch.sh
 
 - include: "modman.yml"
-  tags: 
+  tags:
     - magento
     - modman
   when: magento_modman == "yes"
