@@ -52,6 +52,12 @@
     state=absent
     path="{{ magento_root }}/app/etc/local.xml"
 
+- name: Applay Magento local.xml.template
+  tags: magento
+  template:
+    src={{ magento_local_template|default('local.xml.template.j2') }}
+    dest={{ magento_root }}/app/etc/local.xml.template
+
 - name: Download magento patch files
   tags: magento
   with_items: magento_patch_files
