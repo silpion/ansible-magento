@@ -1,5 +1,4 @@
 ---
-
 - name: Download Magento in given Version
   tags: magento
   sudo: no
@@ -52,7 +51,7 @@
     state=absent
     path="{{ magento_root }}/app/etc/local.xml"
 
-- name: Applay Magento local.xml.template
+- name: Install Magento local.xml.template
   tags: magento
   template:
     src={{ magento_local_template|default('local.xml.template.j2') }}
@@ -71,7 +70,7 @@
     src=patch.j2
     dest={{ magento_root }}/patch.sh
 
-- name: Applay patches
+- name: Apply patches
   tags: magento
   command:
     chdir={{ magento_root }} sh patch.sh
