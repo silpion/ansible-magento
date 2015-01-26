@@ -1,5 +1,4 @@
 ---
-
 - name: Register existing installation
   tags: magento
   register: magento_register_localxml
