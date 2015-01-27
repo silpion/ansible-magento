@@ -1,3 +1,10 @@
+# 0.6.0
+
+Anja Siek (2):
+
+* reduce modman downtime
+* rename template
+
 # 0.5.0
 
 Anja Siek (2):
