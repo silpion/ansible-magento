@@ -77,7 +77,7 @@
     - magento
     - modman
   template:
-    src=handle_extensions.sh
+    src=handle_extensions.sh.j2
     dest={{ magento_install_tmp_dir }}/handle_extensions.sh
 
 - name: Notify modman updates
