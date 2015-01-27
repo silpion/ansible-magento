@@ -72,13 +72,19 @@
     force="{{item.force |default('yes')}}"
     update="{{item.gitupdate|default('yes')}}"
 
-- name: Add extensions to registerd variable
-  with_items:
-    - "{{ magento_modman_extensions_git }}"
-    - "{{ magento_modman_extensions_other }} "
-  register: magento_modman_extensions
-  notify:
-    - rm links
-    - modman link all
-  shell: echo "{{ item.dest }}/{{ item.subdir|default('') }}"
+- name: Create modman template
+  tags:
+    - magento
+    - modman
+  template:
+    src=handle_extensions.sh
+    dest={{ magento_install_tmp_dir }}/handle_extensions.sh
 
+- name: Notify modman updates
+  tags:
+    - magento
+    - modman
+  notify:
+    - handle modman extensions links
+    - modman deploy-all
+  command: /bin/true
