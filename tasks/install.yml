@@ -20,16 +20,16 @@
   sudo: no
   when: magento_download == 'yes'
   local_action: get_url
-    url=http://www.magentocommerce.com/downloads/assets/{{ magento_version }}/magento-{{ magento_version }}.tar.gz
-    dest={{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz
+    url={{ magento_download_host }}/{{ magento_download_package }}
+    dest={{ magento_download_tmp_dir }}/{{ magento_download_package }}
     mode=0644
 
 - name: Copy installation archive
   tags: magento
-  when: magento_download == 'yes'
+  when: magento_copy != 'yes'
   copy:
-    src="{{ magento_download_tmp_dir }}/magento-{{ magento_version }}.tar.gz"
-    dest="{{ magento_install_tmp_dir }}/magento-{{ magento_version }}.tar.gz"
+    src="{{ magento_download_tmp_dir }}/{{ magento_download_package }}"
+    dest="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
     owner=0
     group=0
     mode=0644
@@ -38,15 +38,15 @@
   tags: magento
   sudo: yes
   sudo_user: "{{ magento_webuser }}"
-  when: magento_download == 'yes'
+  when: magento_copy != 'yes'
   unarchive:
-    src="{{ magento_install_tmp_dir }}/magento-{{ magento_version }}.tar.gz"
+    src="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
     dest="{{ magento_install_tmp_dir }}/"
     copy=no
 
 - name: Copy magento from local
   tags: magento
-  when: magento_download != "yes"
+  when: magento_copy == "yes"
   copy:
     src={{ magento_copy_local_dir }}
     dest={{ magento_install_tmp_dir }}
@@ -54,7 +54,7 @@
 - name: Change owner and group
   tags: magento
   file:
-    path={{ magento_install_tmp_dir }}/magento
+    path={{ magento_install_tmp_dir }}/{{ magento_install_tmp_dir_sub |default('magento') }}
     owner={{ magento_webuser }}
     group={{ magento_webgroup }}
     recurse=yes
@@ -65,7 +65,7 @@
   command:
     "rsync -av
     -p --chmod=Du=rwx --chmod=Dg=rx --chmod=Do= --chmod=Fu=rw --chmod=Fg=r --chmod=Fo=
-    {{ magento_install_tmp_dir }}/magento/
+    {{ magento_install_tmp_dir }}/{{ magento_install_tmp_dir_sub |default('magento') }}/
     {{ magento_root }}/"
 
     #rsync_opts="--chmod=D2750,--chmod=F640"
@@ -87,24 +87,6 @@
   template:
     src={{ magento_local_template|default('local.xml.template.j2') }}
     dest={{ magento_root }}/app/etc/local.xml.template
-
-- name: Download magento patch files
-  tags: magento
-  with_items: magento_patch_files
-  get_url:
-    url={{ item.url }}
-    dest={{ magento_root}}/
-
-- name: Create patch-script
-  tags: magento
-  template:
-    src=patch.j2
-    dest={{ magento_root }}/patch.sh
-
-- name: Apply patches
-  tags: magento
-  command:
-    chdir={{ magento_root }} sh patch.sh
 
 - name: Notify install
   tags: magento
