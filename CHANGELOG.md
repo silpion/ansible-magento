@@ -1,3 +1,13 @@
+# 0.7.0
+
+Anja Siek (1):
+
+* mv patch-install to default yml add advanced download and copy management
+
+Mark Kusch (1):
+
+* Update role documentation to be more precise
+
 # 0.6.0
 
 Anja Siek (2):
