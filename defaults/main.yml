@@ -1,6 +1,9 @@
 ---
 magento_root: "/var/www/magento"
 magento_download: "yes"
+magento_download_host: "http://www.magentocommerce.com/downloads/assets/{{ magento_version }}"
+magento_download_package: "magento-{{ magento_version }}.tar.gz"
+magento_copy: "no"
 magento_download_tmp_dir: "/usr/local/src/ansible/data"
 magento_download_tmp_dir_mode: "2777"
 magento_install_tmp_dir: "/tmp"

@@ -8,8 +8,17 @@ Additional can install modman, install Extensions from git and link given modman
 set magento-root dir 
 
 ### magento_download: "yes"
+select yes for downloading from remote. If is set to no you need to cp tar.gz to magento_download_tmp_dir
+
+### magento_download_host: "http://www.magentocommerce.com/downloads/assets/{{ magento_version }}"
+configure host. Default is set to official download location, for configured version
+
+### magento_download_package: "magento-{{ magento_version }}.tar.gz"
+set download packagename
+
+### magento_copy: "no"
 if you have for example special magento-version local you can put it into directory specified 
-in magento_copy_local_dir: and configure magento_download: "no"
+in  magento_copy_local_dir: and configure magento_copy: "yes" and magento_download: "no"
 
 ### magento_copy_local_dir: ""
 difine local magento source
@@ -17,8 +26,14 @@ difine local magento source
 ### magento_download_tmp_dir: "/tmp"
 specify where magento should be downloaded local
 
-### magento_install_tmp_dir: /tmp 
+### magento_download_tmp_dir_mode: "2777"
+configure mode of download tmp dir
+
+### magento_install_tmp_dir: "/tmp" 
 tmp - directory on remote for installation stuff
+
+### magento_install_tmp_dir_sub: "magento"
+configure subdirectory name in tar.gz 
 
 ### magento_version: "1.7.0.2"
 configure magento-version for installation
@@ -152,6 +167,9 @@ magento_modman_extensions_other:
   - dest: "/var/www/extensions/extension"
   - dest: "/var/www/extensions/extension2"
 ```
+### magento_install: false
+role will only run install magento if magento_install is set true 
+or if app/etc/local.xml not exists
 
 ## Dependencies
 see magento system requirements: http://magento.com/resources/system-requirements
