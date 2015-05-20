@@ -61,16 +61,16 @@
   local_action: git
     repo={{ item.repo }}
     dest={{ magento_download_tmp_dir }}/{{ item.name }}
-    remote={{ item.remote|default('origin') }}
-    key_file={{ item.key_file|default(None) }}
-    ssh_opts={{ item.ssh_opts|default(None) }}
-    accept_hostkey={{ item.accept_hostkey|default('no') }}
-    bare={{ item.bare|default('no') }}
-    depth={{ item.depth|default(0) }}
-    executable={{ item.executable|default('') }}
-    reference={{ item.reference|default('') }}
-    force={{ item.force |default('yes') }}
-    update={{ item.gitupdate|default('yes') }}
+    remote="{{ item.remote |default('origin') }}"
+    key_file="{{ item.key_file |default(None) }}"
+    ssh_opts="{{ item.ssh_opts |default(None) }}"
+    accept_hostkey="{{ item.accept_hostkey |default('no') }}"
+    bare="{{ item.bare |default('no') }}"
+    depth="{{ item.depth |default(0) }}"
+    executable="{{ item.executable |default('') }}"
+    reference="{{ item.reference |default('') }}"
+    force="{{ item.force |default('yes') }}"
+    update="{{ item.gitupdate |default('yes') }}"
 
 - name: Archive extensions local
   tags:
