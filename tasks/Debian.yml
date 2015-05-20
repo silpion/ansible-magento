@@ -1,0 +1,8 @@
+---
+
+- name: Install git
+  tags:
+    - magento
+    - modman
+  when: ansible_pkg_mgr  not in (None, "")
+  action: "{{ ansible_pkg_mgr }} state=installed name=git"

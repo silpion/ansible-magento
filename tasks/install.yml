@@ -38,7 +38,15 @@
   tags: magento
   sudo: yes
   sudo_user: "{{ magento_webuser }}"
-  when: magento_copy != 'yes'
+  when: magento_copy != 'yes' and '{{ magento_webuser }}' != '{{ ansible_user_id }}'
+  unarchive:
+    src="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
+    dest="{{ magento_install_tmp_dir }}/"
+    copy=no
+
+- name: Extract Magento
+  tags: magento
+  when: magento_copy != 'yes' and '{{ magento_webuser }}' == '{{ ansible_user_id }}'
   unarchive:
     src="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
     dest="{{ magento_install_tmp_dir }}/"

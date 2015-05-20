@@ -1,6 +1,6 @@
 #!/bin/bash
 
-new_extensions="{%  for item in magento_modman_extensions_git  %} {{item.dest}}/{{item.subdir|default('')}} {% endfor %} {%  for item in magento_modman_extensions_other  %} {{item.dest}}/{{item.subdir|default('')}} {% endfor %}"
+new_extensions="{%  for item in magento_modman_extensions_git  %} {{item.dest}}/{{item.name}}/{{item.subdir|default('')}} {% endfor %} {%  for item in magento_modman_extensions_other  %} {{item.dest}}/{{item.subdir|default('')}} {% endfor %}"
 
 for file in $(ls -l {{ magento_root }}/.modman/ | awk ' {print $11}'); do
   in_file=0;
