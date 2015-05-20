@@ -123,6 +123,7 @@ Required Variables in list:
 
 ```
 repo
+name
 dest
 ```
 
@@ -148,9 +149,11 @@ Example:
 ```
 magento_modman_extensions_git:
   - repo: https://github.com/path/to/repo.git
-    dest: /var/www/extensions/repo
+    name: "repo"
+    dest: /var/www/extensions
   - repo: https://github.com/path/to/repo2.git
-    dest: /var/www/extensions/repo2
+    name: "repo2"
+    dest: /var/www/extensions
     remote: test
     force: no
 ```
