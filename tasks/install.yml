@@ -1,7 +1,7 @@
 ---
-
 - name: Verify download dir exists
   tags: magento
+  sudo: no
   local_action: file
     path={{ magento_download_tmp_dir }}
     state=directory
