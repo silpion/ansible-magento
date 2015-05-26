@@ -26,6 +26,7 @@
 
 - name: run magento install
   shell:
+    chdir={{ magento_root }}
     free_form=yes
     sh {{ magento_install_tmp_dir }}/magento-install.sh
 
