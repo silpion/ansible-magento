@@ -36,7 +36,7 @@
     - magento
     - modman
   sudo: no
-  register: magento_modman_extensions_dirs
+  register: magento_modman_registered_extensions_dirs
   with_items: magento_modman_extensions_git
   local_action: stat
     path={{ magento_download_tmp_dir }}.{{ item.name }}
@@ -48,12 +48,12 @@
   sudo: no
   when: item[0].stat.isdir is defined and item[0].stat.isdir == true
   with_together:
-    - magento_modman_extensions_dirs.results
+    - magento_modman_registered_extensions_dirs.results
     - magento_modman_extensions_git
   local_action: shell >
     chdir={{ magento_download_tmp_dir }}/{{ item[1].name }}
     free_form=yes
-    git remote set-url {{ item[1].remote | default('origin') }} {{ item[1].repo }}
+    git remote set-url {{ item[1].remote|default('origin') }} {{ item[1].repo }}
 
 - name: Install Extensions from git
   tags:
@@ -64,17 +64,17 @@
   local_action: git
     repo={{ item.repo }}
     dest={{ magento_download_tmp_dir }}/{{ item.name }}
-    remote="{{ item.remote | default('origin') }}"
-    key_file="{{ item.key_file | default(None) }}"
-    ssh_opts="{{ item.ssh_opts | default(None) }}"
-    accept_hostkey="{{ item.accept_hostkey | default('no') }}"
-    bare="{{ item.bare | default('no') }}"
-    depth="{{ item.depth | default(0) }}"
-    executable="{{ item.executable | default('') }}"
-    reference="{{ item.reference | default('') }}"
-    force="{{ item.force | default('yes') }}"
-    update="{{ item.gitupdate | default('yes') }}"
-    version="{{ item.version | default('HEAD') }}"
+    remote="{{ item.remote|default('origin') }}"
+    key_file="{{ item.key_file|default(None) }}"
+    ssh_opts="{{ item.ssh_opts|default(None) }}"
+    accept_hostkey="{{ item.accept_hostkey|default('no') }}"
+    bare="{{ item.bare|default('no') }}"
+    depth="{{ item.depth|default(0) }}"
+    executable="{{ item.executable|default('') }}"
+    reference="{{ item.reference|default('') }}"
+    force="{{ item.force|default('yes') }}"
+    update="{{ item.gitupdate|default('yes') }}"
+    version="{{ item.version|default('HEAD') }}"
 
 - name: Archive extensions local
   tags:
@@ -84,9 +84,9 @@
   with_items: magento_modman_extensions_git
   local_action: shell
     chdir={{ magento_download_tmp_dir }}/{{ item.name }}
-    git archive --format=tar --output={{ magento_download_tmp_dir }}/{{ item.name }}.tar  {{ item.version | default('HEAD') }}
+    git archive --format=tar --output={{ magento_download_tmp_dir }}/{{ item.name }}.tar  {{ item.version|default('HEAD') }}
 
-- name: Create Extension Directorys if not exists
+- name: Install extensions directories
   tags:
     - magento
     - modman
