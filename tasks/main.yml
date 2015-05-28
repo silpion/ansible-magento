@@ -11,7 +11,7 @@
   set_fact:
     magento_install=true
 
-- include: "install.yml"
+- include: install.yml
   tag: magento
   when: magento_install
 
@@ -41,7 +41,7 @@
     - Verify permissions
   command: /bin/true
 
-- include: "modman.yml"
+- include: modman.yml
   tags:
     - magento
     - modman

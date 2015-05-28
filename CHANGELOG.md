@@ -1,3 +1,20 @@
+# 0.8.0
+
+Anja Siek (7):
+
+* remove requirement of ssh-keys on remote
+* fix variables
+* fix documentation
+* do not use sudo on local_action
+* fix version
+
+# 0.7.1
+
+Mark Kusch (2):
+
+* Make a list of documented variables
+* ansible-magento 0.7.1: Fix markdown rendering for documentation
+
 # 0.7.0
 
 Anja Siek (1):

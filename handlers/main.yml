@@ -1,5 +1,4 @@
 ---
-
 - name: handle modman extensions links
   notify: modman clean
   ignore_errors: yes
