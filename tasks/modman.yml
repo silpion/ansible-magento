@@ -1,4 +1,16 @@
 ---
+- name: Ensure private key access controls
+  tags:
+    - magento
+    - modman
+  sudo: no
+  with_items: magento_modman_extensions_git
+  when: item.key_file is defined
+  local_action: file
+    state=file
+    dest={{ item.key_file }}
+    mode=0600
+
 - name: Install modman
   tags:
     - magento
