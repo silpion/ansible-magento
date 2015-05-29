@@ -1,3 +1,9 @@
+# 0.8.1
+
+Mark Kusch (1):
+
+* Ensure ssh private keys are mode 0600 after cloning this repository with Git
+
 # 0.8.0
 
 Anja Siek (7):
