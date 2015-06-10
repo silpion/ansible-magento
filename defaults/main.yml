@@ -1,4 +1,5 @@
 ---
+magento_manage_magento: true
 magento_root: "/var/www/magento"
 magento_download: "yes"
 magento_download_host: "http://www.magentocommerce.com/downloads/assets/{{ magento_version }}"
