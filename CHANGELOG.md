@@ -1,3 +1,9 @@
+# 0.9.0
+
+Anja Siek (1):
+
+* allow to only use the modman part of this role
+
 # 0.8.1
 
 Mark Kusch (1):

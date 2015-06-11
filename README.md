@@ -22,6 +22,7 @@ Allows to configure extensions to be managed with modman.
 * ``magento_permissions_list``: Allows to configure access controls for magento internal directory structure (dict, default: ``[]``)
 * ``magento_config``: Configure magento (dict, default: see below)
 * ``magento_patch_files``: Configure list of patches to apply into magento (list, default: ``[]``)
+* ``magento_manage_magento``: If you only want to manage modman extensions set this to false and all the magento-suff will not run (boolean, default: ``true``)
 * ``magento_modman``: Wether to install modman into magento (boolean, default: ``true``)
 * ``magento_modman_bin_dir``: Directory where to install modman to (string, default: ``/root/bin``)
 * ``magento_modman_extensions_git``: List of extensions to be installed/managed with modman from Git resources (dict, default: ``[]``)
@@ -175,6 +176,7 @@ magento_modman_extensions_other:
   - dest: /var/www/extensions/extension
   - dest: /var/www/extensions/extension2
 ```
+
 
 ## Dependencies
 
