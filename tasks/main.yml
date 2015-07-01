@@ -1,45 +1,7 @@
 ---
-- name: Register existing installation
+- include: magento.yml
   tags: magento
-  register: magento_register_localxml
-  stat:
-    path={{ magento_root }}/app/etc/local.xml
-
-- name: Set magento_install variable
-  tags: magento
-  when: not magento_register_localxml.stat.exists
-  set_fact:
-    magento_install=true
-
-- include: install.yml
-  tag: magento
-  when: magento_install
-
-- name: Download magento patch files
-  tags: magento
-  with_items: magento_patch_files
-  get_url:
-    url={{ item.url }}
-    dest={{ magento_root}}/
-
-- name: Create patch-script
-  tags: magento
-  template:
-    src=patch.j2
-    dest={{ magento_root }}/patch.sh
-
-- name: Apply patches
-  tags: magento
-  ignore_errors: yes
-  command:
-    chdir={{ magento_root }} sh patch.sh
-
-- name: Notify permissions verify
-  tags: magento
-  notify:
-    - Verify user
-    - Verify permissions
-  command: /bin/true
+  when: magento_manage_magento
 
 - include: modman.yml
   tags:
