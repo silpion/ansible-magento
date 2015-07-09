@@ -1,3 +1,9 @@
+# 1.0.0
+
+Anja Siek (1):
+
+* fix magento local download
+
 # 0.9.0
 
 Anja Siek (1):
