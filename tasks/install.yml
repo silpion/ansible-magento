@@ -5,8 +5,6 @@
   local_action: file
     path={{ magento_download_tmp_dir }}
     state=directory
-    owner=0
-    group=0
     mode={{ magento_download_tmp_dir_mode }}
 
 - name: Verify download remote dir exists
