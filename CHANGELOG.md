@@ -1,3 +1,9 @@
+# 1.1.0
+
+Anja Siek (1):
+
+* change patch install to local download
+
 # 1.0.0
 
 Anja Siek (1):
