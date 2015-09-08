@@ -18,8 +18,15 @@
 - name: Download magento patch files
   tags: magento
   with_items: magento_patch_files
-  get_url:
+  local_action: get_url
     url={{ item.url }}
+    dest={{ magento_download_tmp_dir }}/
+
+- name: Upload patch files to Remote
+  tags: magento
+  with_items: magento_patch_files
+  copy:
+    src="{{ magento_download_tmp_dir }}/{{ item.name}}"
     dest={{ magento_root}}/
 
 - name: Create patch-script
