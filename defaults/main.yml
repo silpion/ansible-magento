@@ -1,37 +1,35 @@
 ---
 magento_manage_magento: true
 magento_root: "/var/www/magento"
-magento_download: "yes"
+magento_download: true
+magento_install: false
 magento_download_host: "http://www.magentocommerce.com/downloads/assets/{{ magento_version }}"
 magento_download_package: "magento-{{ magento_version }}.tar.gz"
-magento_copy: "no"
-magento_download_tmp_dir: "{{ lookup('env', 'HOME') + '/.ansible/assets' }}"
-magento_download_tmp_dir_mode: "2777"
-magento_install_tmp_dir: "/tmp"
+magento_download_url: "{{ magento_download_host }}/{{ magento_download_package }}"
+#magento_download_url: "https://codeload.github.com/OpenMage/magento-mirror/tar.gz/{{ magento_version }}"
 magento_version: "1.7.0.2"
-magento_copy_local_dir: ""
+magento_bin_dir: "/root/bin"
 
 magento_webuser: "www-data"
 magento_webgroup: "www-data"
 
 magento_permissions_list:
   - mode: "771"
-    dir: "{{ magento_root}}/media"
+    dir: "{{ magento_root }}/media"
     type: "d"
   - mode: "771"
-    dir: "{{ magento_root}}/var"
+    dir: "{{ magento_root }}/var"
     type: "d"
   - mode: "664"
-    dir: "{{ magento_root}}/var"
+    dir: "{{ magento_root }}/var"
     type: "f"
 
 magento_config: []
 
 magento_patch_files: []
 
-magento_modman: "yes"
-magento_modman_bin_dir: "/root/bin"
+magento_modman: true
+magento_modman_bin_dir: "{{ magento_bin_dir }}"
 magento_modman_extensions_git: []
 magento_modman_extensions_other: []
 
-magento_install: false

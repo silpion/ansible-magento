@@ -3,105 +3,119 @@
   tags:
     - magento
     - modman
-  sudo: no
+  become: "{{ lib_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_action_become_user|default(omit) }}"
   with_items: magento_modman_extensions_git
   when: item.key_file is defined
   local_action: file
-    state=file
-    dest={{ item.key_file }}
-    mode=0600
+  args:
+    state: file
+    dest: "{{ item.key_file }}"
+    mode: 0600
 
 - name: Install modman
   tags:
     - magento
     - modman
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   get_url:
-    url=https://raw.github.com/colinmollenhour/modman/master/modman
-    dest={{ magento_modman_bin_dir }}/modman
-    mode="0755"
-    owner={{ magento_webuser}}
-    group={{ magento_webgroup }}
+    url: https://raw.github.com/colinmollenhour/modman/master/modman
+    dest: "{{ magento_modman_bin_dir }}/modman"
+    mode: 0755
+    owner: "{{ magento_webuser}}"
+    group: "{{ magento_webgroup }}"
 
 - name: Check modman dir exists
   tags:
     - magento
     - modman
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   register: check_modman
-  stat: path={{ magento_root }}/.modman
+  stat:
+    path: "{{ magento_root }}/.modman"
 
 - name: modman Init magento
   tags:
     - magento
     - modman
-  when: check_modman.stat.exists == false
-  command: chdir={{ magento_root }} {{ magento_modman_bin_dir }}/modman init
-
-# Include os-specific tasks
-- include: "Debian.yml"
-  tags:
-    - magento
-    - modman
-  when: ansible_os_family == 'Debian'
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  when: not check_modman.stat.exists
+  command:
+    "{{ magento_modman_bin_dir }}/modman init"
+  args:
+    chdir: "{{ magento_root }}"
 
 - name: Check extensions already checked out
   tags:
     - magento
     - modman
-  sudo: no
+  become: "{{ lib_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_action_become_user|default(omit) }}"
   register: magento_modman_registered_extensions_dirs
   with_items: magento_modman_extensions_git
   local_action: stat
-    path={{ magento_download_tmp_dir }}.{{ item.name }}
+  args:
+    path: "{{ lib_persistent_data_path_local }}.{{ item.name }}"
 
 - name: Update git remote
   tags:
     - magento
     - modman
-  sudo: no
-  when: item[0].stat.isdir is defined and item[0].stat.isdir == true
+  become: "{{ lib_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_action_become_user|default(omit) }}"
+  when: item[0].stat.isdir is defined and item[0].stat.isdir
   with_together:
     - magento_modman_registered_extensions_dirs.results
     - magento_modman_extensions_git
-  local_action: shell >
-    chdir={{ magento_download_tmp_dir }}/{{ item[1].name }}
-    free_form=yes
-    git remote set-url {{ item[1].remote|default('origin') }} {{ item[1].repo }}
+  local_action: shell
+    "git remote set-url {{ item[1].remote|default('origin') }} {{ item[1].repo }}"
+  args:
+    chdir: "{{ lib_persistent_data_path_local }}/{{ item[1].name }}"
 
 - name: Install Extensions from git
   tags:
     - magento
     - modman
-  sudo: no
+  become: "{{ lib_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_action_become_user|default(omit) }}"
   with_items: magento_modman_extensions_git
   local_action: git
-    repo={{ item.repo }}
-    dest={{ magento_download_tmp_dir }}/{{ item.name }}
-    remote="{{ item.remote|default('origin') }}"
-    key_file="{{ item.key_file|default(None) }}"
-    ssh_opts="{{ item.ssh_opts|default(None) }}"
-    accept_hostkey="{{ item.accept_hostkey|default('no') }}"
-    bare="{{ item.bare|default('no') }}"
-    depth="{{ item.depth|default(0) }}"
-    executable="{{ item.executable|default('') }}"
-    reference="{{ item.reference|default('') }}"
-    force="{{ item.force|default('yes') }}"
-    update="{{ item.gitupdate|default('yes') }}"
-    version="{{ item.version|default('HEAD') }}"
+  args:
+    repo: "{{ item.repo }}"
+    dest: "{{ lib_persistent_data_path_local }}/{{ item.name }}"
+    remote: "{{ item.remote|default('origin') }}"
+    key_file: "{{ item.key_file|default(None) }}"
+    ssh_opts: "{{ item.ssh_opts|default(None) }}"
+    accept_hostkey: "{{ item.accept_hostkey|default(false) }}"
+    bare: "{{ item.bare|default(false) }}"
+    depth: "{{ item.depth|default(0) }}"
+    executable: "{{ item.executable|default('') }}"
+    reference: "{{ item.reference|default('') }}"
+    force: "{{ item.force|default(true) }}"
+    update: "{{ item.gitupdate|default(true) }}"
+    version: "{{ item.version|default('HEAD') }}"
 
 - name: Archive extensions local
   tags:
     - magento
     - modman
-  sudo: no
+  become: "{{ lib_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_action_become_user|default(omit) }}"
   with_items: magento_modman_extensions_git
-  local_action: shell
-    chdir={{ magento_download_tmp_dir }}/{{ item.name }}
-    git archive --format=tar --output={{ magento_download_tmp_dir }}/{{ item.name }}.tar  {{ item.version|default('HEAD') }}
+  local_action: command
+    git archive --format=tar --output="{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"  {{ item.version|default('HEAD') }}
+  args:
+    chdir: "{{ lib_persistent_data_path_local }}/{{ item.name }}"
 
 - name: Install extensions directories
   tags:
     - magento
     - modman
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   with_items: magento_modman_extensions_git
   file:
     path={{ item.dest }}/{{ item.name }}
@@ -114,18 +128,22 @@
   tags:
     - magento
     - modman
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   with_items: magento_modman_extensions_git
   unarchive:
-    src={{ magento_download_tmp_dir }}/{{ item.name }}.tar
-    dest={{ item.dest }}/{{ item.name }}
+    src: "{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"
+    dest: "{{ item.dest }}/{{ item.name }}"
 
 - name: Create modman template
   tags:
     - magento
     - modman
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   template:
-    src=handle_extensions.sh.j2
-    dest={{ magento_install_tmp_dir }}/handle_extensions.sh
+    src: handle_extensions.sh.j2
+    dest: "{{ magento_modman_bin_dir }}/handle_extensions.sh"
 
 - name: Notify modman updates
   tags:

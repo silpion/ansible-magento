@@ -1,9 +1,11 @@
 ---
 - name: Register existing installation
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   register: magento_register_localxml
   stat:
-    path={{ magento_root }}/app/etc/local.xml
+    path: "{{ magento_root }}/app/etc/local.xml"
 
 - name: Set magento_install variable
   tags: magento
@@ -11,35 +13,45 @@
   set_fact:
     magento_install=true
 
-- include: install.yml
-  tag: magento
+- name: Include Magento Install Tasks
+  tags: magento
   when: magento_install
+  include: install.yml
 
 - name: Download magento patch files
   tags: magento
   with_items: magento_patch_files
-  local_action: get_url
-    url={{ item.url }}
-    dest={{ magento_download_tmp_dir }}/
+  include: ../../silpion.lib/tasks/get_url.yml
+  args:
+    url: "{{ item.url }}"
+    filename: "{{ item.name }}"
 
 - name: Upload patch files to Remote
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   with_items: magento_patch_files
   copy:
-    src="{{ magento_download_tmp_dir }}/{{ item.name}}"
-    dest={{ magento_root}}/
+    src: "{{ lib_persistent_data_path_local }}/{{ item.name }}"
+    dest: "{{ magento_root }}/"
 
 - name: Create patch-script
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   template:
-    src=patch.j2
-    dest={{ magento_root }}/patch.sh
+    src: patch.j2
+    dest: "{{ magento_root }}/patch.sh"
 
 - name: Apply patches
   tags: magento
-  ignore_errors: yes
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  ignore_errors: true
   command:
-    chdir={{ magento_root }} sh patch.sh
+    sh patch.sh
+  args:
+    chdir: "{{ magento_root }}"
 
 - name: Notify permissions verify
   tags: magento
