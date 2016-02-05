@@ -32,7 +32,7 @@
     - modman
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  register: check_modman
+  register: register_magento_modman_check_modman
   stat:
     path: "{{ magento_root }}/.modman"
 
@@ -42,7 +42,7 @@
     - modman
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  when: not check_modman.stat.exists
+  when: not register_magento_modman_check_modman.stat.exists
   command:
     "{{ magento_modman_bin_dir }}/modman init"
   args:

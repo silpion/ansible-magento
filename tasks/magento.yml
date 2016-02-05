@@ -11,7 +11,7 @@
   tags: magento
   when: not magento_register_localxml.stat.exists
   set_fact:
-    magento_install=true
+    magento_install: true
 
 - name: Include Magento Install Tasks
   tags: magento
@@ -58,4 +58,4 @@
   notify:
     - Verify user
     - Verify permissions
-  command: /bin/true
+  command: "true"

@@ -7,7 +7,7 @@ Allows to configure extensions to be managed with modman.
 
 * ``magento_version``: magento version to install (string, default: ``1.7.0.2``)
 * ``magento_root``: Configure magento root directory (string, default: ``/var/www/magento``)
-* ``magento_bin_dir``: Directory to save binary-files like istall-script (string, default: ``/root/bin``)
+* ``magento_bin_dir``: Directory to save binary-files like install-script (string, default: ``/root/bin``)
 * ``magento_webuser``: Service user to run magento with (string, default: ``www-data``)
 * ``magento_webgroup``: Service group for the ``magento_webuser`` service user (string, default: ``www-data``)
 * ``magento_download``: Whether to download magento (boolean, default: ``true``)
@@ -156,11 +156,11 @@ magento_modman_extensions_other:
 
 ## Dependencies
 
-### soft Dependencies 
+### Soft dependencies 
 
 See magento system requirements: http://magento.com/resources/system-requirements
 
-### hard Dependencies
+### Hard dependencies
 
 This role depends on [silpion.lib](https://github.com/silpion/ansible-lib)
 role. This is configured for ``ansible-galaxy install`` in **requirements.yml**.
