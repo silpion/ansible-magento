@@ -7,47 +7,24 @@ Allows to configure extensions to be managed with modman.
 
 * ``magento_version``: magento version to install (string, default: ``1.7.0.2``)
 * ``magento_root``: Configure magento root directory (string, default: ``/var/www/magento``)
-* ``magento_user``: Service user to run magento with (string, default: ``www-data``)
-* ``magento_group``: Service group for the ``magento_user`` service user (string, default: ``www-data``)
+* ``magento_bin_dir``: Directory to save binary-files like install-script (string, default: ``/root/bin``)
+* ``magento_webuser``: Service user to run magento with (string, default: ``www-data``)
+* ``magento_webgroup``: Service group for the ``magento_webuser`` service user (string, default: ``www-data``)
 * ``magento_download``: Whether to download magento (boolean, default: ``true``)
 * ``magento_download_host``: Mirror URI where to download magento from when ``magento_download`` is true (string, default: ``http://www.magentocommerce.com/downloads/assets/{{ magento_version }}``)
 * ``magento_download_package``: Package name for the magento redistributable archive (string, default: ``magento-{{ magento_version }}.tar.gz``)
-* ``magento_download_tmp_dir``: Where to download magento redistributable archive to (string, default: ``/tmp``)
-* ``magento_download_tmp_dir_mode``: Filesystem access mode for the download directory (oct, default: ``2777``)
-* ``magento_copy``: Whether to recursively copy an existing and extracted magento tree from the workstations filesystem (boolean, default: ``false``)
-* ``magento_copy_local_dir``: Source directory for an existing and extracted magento tree to copy to the managed node (string, default: ``""``)
+* ``magento_download_url``: Full Download-Url (string, default: ``{{ magento_download_host }}/{{ magento_download_package }}``)
 * ``magento_install``: Whether to install magento even if app/etc/local.xml does not exist (boolean, default: ``false``)
-* ``magento_install_tmp_dir``: Destination directory on the managed node to upload magento data to (string, default: ``/tmp``)
-* ``magento_install_tmp_dir_sub``: Allows to configure a known base directory name within the redistributable archive (string, default: ``magento``)
+* ``magento_archive_subdir``: Allows to configure a known base directory name within the redistributable archive (string, default: ``magento``)
 * ``magento_permissions_list``: Allows to configure access controls for magento internal directory structure (dict, default: ``[]``)
 * ``magento_config``: Configure magento (dict, default: see below)
 * ``magento_patch_files``: Configure list of patches to apply into magento (list, default: ``[]``)
 * ``magento_manage_magento``: If you only want to manage modman extensions set this to false and all the magento-suff will not run (boolean, default: ``true``)
 * ``magento_modman``: Wether to install modman into magento (boolean, default: ``true``)
-* ``magento_modman_bin_dir``: Directory where to install modman to (string, default: ``/root/bin``)
+* ``magento_modman_bin_dir``: Directory where to install modman to (string, default: ``magento_bin_dir``)
 * ``magento_modman_extensions_git``: List of extensions to be installed/managed with modman from Git resources (dict, default: ``[]``)
 * ``magento_modman_extensions_other`` List of non-git extensions to be managed with modman (dict, default: ``[]``)
 
-
-### magento_copy
-
-This variable controls two different meanings.
-
-#### true
-
-``true`` here means that there is a local filesystem on the workstation where an extracted magento is hosted. This allows to pre-configure
-a magento redistributable and have this role install this version of magento recursively. Enabling this feature requires to configure
-``magento_copy_local_dir`` variable and point it to the extracted magento installation.
-
-#### false
-
-If this variable is set false (default) this role will copy a magento redistributable archive to the remote node. Archive source is
-``{{ magento_download_tmp_dir }}/{{ magento_download_package }}``.
-When configuring ``magento_dowload`` to ``false`` this allows to install a pre-configured magento tarball to the managed node.
-
-
-Running the default role configuration will download magento for magentocommerce website, install the archive to the managed node
-and extract it to ``{{ magento_root }}`` directory.
 
 ### magento_permissions_list
 
@@ -177,10 +154,25 @@ magento_modman_extensions_other:
   - dest: /var/www/extensions/extension2
 ```
 
-
 ## Dependencies
 
+### Soft dependencies 
+
 See magento system requirements: http://magento.com/resources/system-requirements
+
+### Hard dependencies
+
+This role depends on [silpion.lib](https://github.com/silpion/ansible-lib)
+role. This is configured for ``ansible-galaxy install`` in **requirements.yml**.
+
+**NOTE**: Check lib configuration Variables to configure privilege escalation, download/upload -path etc.
+
+**NOTE**: Requirements are installed as virtual user ``silpion``
+(``silpion.lib``).
+
+Be sure to install required roles with
+
+    ansible-galaxy install --role-file requirements.yml
 
 ## License
 
@@ -189,6 +181,5 @@ Apache Version 2.0
 ## Author Information
 
 Anja Siek @anja.siek silpion.de
-
 
 <!-- vim: set nofen ts=4 sw=4 et: -->

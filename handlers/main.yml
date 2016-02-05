@@ -1,46 +1,58 @@
 ---
 - name: handle modman extensions links
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   notify: modman clean
   ignore_errors: yes
-  shell:
-    sh {{ magento_install_tmp_dir }}/handle_extensions.sh
+  command:
+    sh {{ magento_modman_bin_dir }}/handle_extensions.sh
 
 - name: modman clean
-  shell:
-    chdir={{ magento_root }}
-    free_form=yes
-    {{ magento_modman_bin_dir }}/modman clean
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  command:
+    "{{ magento_modman_bin_dir }}/modman clean"
+  args:
+    chdir: "{{ magento_root }}"
 
 - name: modman deploy-all
-  shell:
-    chdir={{ magento_root }}
-    free_form=yes
-    "{{ magento_modman_bin_dir }}/modman" deploy-all --force
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  command:
+    "{{ magento_modman_bin_dir }}/modman deploy-all --force"
+  args:
+    chdir: "{{ magento_root }}"
 
 - name: modman repair
-  shell:
-    chdir={{ magento_root }}
-    free_form=yes
-    {{ magento_modman_bin_dir }}/modman repair
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  command:
+    "{{ magento_modman_bin_dir }}/modman repair"
+  args:
+    chdir: "{{ magento_root }}"
 
 - name: run magento install
-  shell:
-    chdir={{ magento_root }}
-    free_form=yes
-    sh {{ magento_install_tmp_dir }}/magento-install.sh
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
+  command:
+    sh {{ magento_bin_dir }}/magento-install.sh
 
 - name: Verify user
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   file:
-    path={{ magento_install_tmp_dir }}/magento
-    owner={{ magento_webuser }}
-    group={{ magento_webgroup }}
-    recurse=yes
-    state=directory
+    state: directory
+    path: "{{ magento_root }}"
+    owner: "{{ magento_webuser }}"
+    group: "{{ magento_webgroup }}"
+    recurse: true
 
 - name: Verify permissions
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   with_items: magento_permissions_list
   shell: >
-    chdir={{ item.dir}}
-    free_form=yes
     find . -type {{ item.type }} -exec
     chmod {{ item.mode }} {} \; ;
+  args:
+    chdir: "{{ item.dir }}"
