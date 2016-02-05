@@ -1,3 +1,11 @@
+# 2.0.0
+
+Anja Siek (3):
+
+* use code generator
+* fix readme and merge conflicts
+* add small fixes
+
 # 1.1.0
 
 Anja Siek (1):
