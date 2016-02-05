@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Anja Siek
-  description: Manage Magento installation 
+  description: Manage Magento installation
   company: http://silpion.de
   # Some suggested licenses:
   # - BSD (default)
@@ -11,10 +11,10 @@ galaxy_info:
   # - Apache
   # - CC-BY
   license: Apache 2
-  min_ansible_version: 1.5
+  min_ansible_version: 2.0
   #
   # Below are all platforms currently available. Just uncomment
-  # the ones that apply to your role. If you don't see your 
+  # the ones that apply to your role. If you don't see your
   # platform on this list, let us know and we'll get it added!
   #
   platforms:
@@ -114,9 +114,10 @@ galaxy_info:
   #- packaging
   #- system
   - web
-dependencies: []
+dependencies:
+  - { role: silpion.lib }
   # List your role dependencies here, one per line. Only
   # dependencies available via galaxy should be listed here.
   # Be sure to remove the '[]' above if you add dependencies
   # to this list.
-  
+

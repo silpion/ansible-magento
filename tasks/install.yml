@@ -1,96 +1,77 @@
 ---
-- name: Verify download dir exists
-  tags: magento
-  sudo: no
-  local_action: file
-    path={{ magento_download_tmp_dir }}
-    state=directory
-    mode={{ magento_download_tmp_dir_mode }}
+- name: Include data persintency
+  tags: magneto
+  include: ../../silpion.lib/tasks/datapersistency.yml
 
-- name: Verify download remote dir exists
+- name: Download Magento
   tags: magento
-  file:
-    path={{ magento_install_tmp_dir }}
-    state=directory
+  when: magento_download
+  include: ../../silpion.lib/tasks/get_url.yml
+  vars:
+    url: "{{ magento_download_url }}"
+    filename: "{{ magento_download_package }}"
 
-- name: Download Magento in given Version
+- name: Upload installation archive
   tags: magento
-  sudo: no
-  when: magento_download == 'yes'
-  local_action: get_url
-    url={{ magento_download_host }}/{{ magento_download_package }}
-    dest={{ magento_download_tmp_dir }}/{{ magento_download_package }}
-    mode=0644
-
-- name: Copy installation archive
-  tags: magento
-  when: magento_copy != 'yes'
-  copy:
-    src="{{ magento_download_tmp_dir }}/{{ magento_download_package }}"
-    dest="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
-    mode=0644
+  include: ../../silpion.lib/tasks/copy.yml
+  vars:
+    filename: "{{ magento_download_package }}"
 
 - name: Extract Magento
   tags: magento
-  sudo: yes
-  sudo_user: "{{ magento_webuser }}"
-  when: magento_copy != 'yes' and '{{ magento_webuser }}' != '{{ ansible_user_id }}'
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   unarchive:
-    src="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
-    dest="{{ magento_install_tmp_dir }}/"
-    copy=no
-
-- name: Extract Magento
-  tags: magento
-  when: magento_copy != 'yes' and '{{ magento_webuser }}' == '{{ ansible_user_id }}'
-  unarchive:
-    src="{{ magento_install_tmp_dir }}/{{ magento_download_package }}"
-    dest="{{ magento_install_tmp_dir }}/"
-    copy=no
-
-- name: Copy magento from local
-  tags: magento
-  when: magento_copy == "yes"
-  copy:
-    src={{ magento_copy_local_dir }}
-    dest={{ magento_install_tmp_dir }}
+    src: "{{ lib_persistent_data_path_remote }}/{{ magento_download_package }}"
+    dest: "{{ lib_persistent_data_path_remote }}/"
+    copy: false
 
 - name: Change owner and group
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   file:
-    path={{ magento_install_tmp_dir }}/{{ magento_install_tmp_dir_sub |default('magento') }}
-    owner={{ magento_webuser }}
-    group={{ magento_webgroup }}
-    recurse=yes
-    state=directory
+    state: directory
+    path: "{{ lib_persistent_data_path_remote }}/{{ magento_archive_subdir|default('magento') }}"
+    owner: "{{ magento_webuser }}"
+    group: "{{ magento_webgroup }}"
+    recurse: true
 
 - name: Move to Magento-Root-Dir
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   command:
     "rsync -av
     -p --chmod=Du=rwx --chmod=Dg=rx --chmod=Do= --chmod=Fu=rw --chmod=Fg=r --chmod=Fo=
-    {{ magento_install_tmp_dir }}/{{ magento_install_tmp_dir_sub |default('magento') }}/
+    {{ lib_persistent_data_path_remote }}/{{ magento_archive_subdir|default('magento') }}/
     {{ magento_root }}/"
 
     #rsync_opts="--chmod=D2750,--chmod=F640"
     #
 - name: Create Magento-Install script
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   template:
-    src=magento-install.j2
-    dest={{ magento_install_tmp_dir }}/magento-install.sh
+    src: magento-install.j2
+    dest: "{{ magento_bin_dir }}/magento-install.sh"
 
 - name: Remove app/etc/local.xml if exists
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   file:
-    state=absent
-    path="{{ magento_root }}/app/etc/local.xml"
+    state: absent
+    path: "{{ magento_root }}/app/etc/local.xml"
 
 - name: Install Magento local.xml.template
   tags: magento
+  become: "{{ lib_action_become_enable }}"
+  become_user: "{{ lib_action_become_user }}"
   template:
-    src={{ magento_local_template|default('local.xml.template.j2') }}
-    dest={{ magento_root }}/app/etc/local.xml.template
+    src: "{{ magento_local_template|default('local.xml.template.j2') }}"
+    dest: "{{ magento_root }}/app/etc/local.xml.template"
 
 - name: Notify install
   tags: magento

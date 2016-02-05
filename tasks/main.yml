@@ -1,10 +1,12 @@
 ---
-- include: magento.yml
+- name: Include Magento Tasks
   tags: magento
   when: magento_manage_magento
+  include: magento.yml
 
-- include: modman.yml
+- name: Include Modman Tasks
   tags:
     - magento
     - modman
-  when: magento_modman == "yes"
+  when: magento_modman
+  include: modman.yml
