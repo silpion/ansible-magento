@@ -118,11 +118,11 @@
   become_user: "{{ lib_action_become_user }}"
   with_items: magento_modman_extensions_git
   file:
-    path={{ item.dest }}/{{ item.name }}
-    owner={{ magento_webuser }}
-    group={{ magento_webgroup }}
-    mode=2751
-    state=directory
+    state: directory
+    path: "{{ item.dest }}/{{ item.name }}"
+    group: "{{ magento_modman_extensions_group }}"
+    mode: "{{ magento_modman_extensions_mode }}"
+    owner: "{{ magento_modman_extensions_owner }}"
 
 - name: Extract Extensions to Remote
   tags:
@@ -134,6 +134,9 @@
   unarchive:
     src: "{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"
     dest: "{{ item.dest }}/{{ item.name }}"
+    group: "{{ magento_modman_extensions_group }}"
+    mode: "{{ magento_modman_extensions_mode }}"
+    owner: "{{ magento_modman_extensions_owner }}"
 
 - name: Create modman template
   tags:
