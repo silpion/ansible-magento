@@ -32,4 +32,6 @@ magento_modman: true
 magento_modman_bin_dir: "{{ magento_bin_dir }}"
 magento_modman_extensions_git: []
 magento_modman_extensions_other: []
-
+magento_modman_extensions_owner: "{{ magento_webuser }}"
+magento_modman_extensions_group: "{{ magento_webgroup }}"
+magento_modman_extensions_mode: "0770"

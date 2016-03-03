@@ -1,3 +1,8 @@
+# 2.0.2
+Anja Siek (1):
+
+* add option to modify modman-extensions permission
+
 # 2.0.1
 Anja Siek (1):
 
