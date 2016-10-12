@@ -35,3 +35,6 @@ magento_modman_extensions_other: []
 magento_modman_extensions_owner: "{{ magento_webuser }}"
 magento_modman_extensions_group: "{{ magento_webgroup }}"
 magento_modman_extensions_mode: "0770"
+
+# path to lib_role
+magento_path_to_lib_role: "{{ lib_roles_path|default(playbook_dir + '/roles') }}"
