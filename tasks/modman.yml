@@ -79,8 +79,8 @@
   tags:
     - magento
     - modman
-  become: "{{ lib_action_become_enable|default(omit) }}"
-  become_user: "{{ lib_action_become_user|default(omit) }}"
+  become: "{{ lib_local_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_local_action_become_user|default(omit) }}"
   with_items: magento_modman_extensions_git
   local_action: git
   args:
@@ -102,8 +102,8 @@
   tags:
     - magento
     - modman
-  become: "{{ lib_action_become_enable|default(omit) }}"
-  become_user: "{{ lib_action_become_user|default(omit) }}"
+  become: "{{ lib_local_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_local_action_become_user|default(omit) }}"
   with_items: magento_modman_extensions_git
   local_action: command
     git archive --format=tar --output="{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"  {{ item.version|default('HEAD') }}
