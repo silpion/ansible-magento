@@ -1,19 +1,19 @@
 ---
 - name: Include data persintency
   tags: magneto
-  include: ../../silpion.lib/tasks/datapersistency.yml
+  include: "{{ magento_path_to_lib_role }}/silpion.lib/tasks/datapersistency.yml"
 
 - name: Download Magento
   tags: magento
   when: magento_download
-  include: ../../silpion.lib/tasks/get_url.yml
+  include: "{{ magento_path_to_lib_role }}/silpion.lib/tasks/get_url.yml"
   vars:
     url: "{{ magento_download_url }}"
     filename: "{{ magento_download_package }}"
 
 - name: Upload installation archive
   tags: magento
-  include: ../../silpion.lib/tasks/copy.yml
+  include: "{{ magento_path_to_lib_role }}/silpion.lib/tasks/copy.yml"
   vars:
     filename: "{{ magento_download_package }}"
 
