@@ -50,7 +50,7 @@
 - name: Verify permissions
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  with_items: magento_permissions_list
+  with_items: "{{ magento_permissions_list}}"
   shell: >
     find . -type {{ item.type }} -exec
     chmod {{ item.mode }} {} \; ;

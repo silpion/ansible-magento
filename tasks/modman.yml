@@ -5,7 +5,7 @@
     - modman
   become: "{{ lib_action_become_enable|default(omit) }}"
   become_user: "{{ lib_action_become_user|default(omit) }}"
-  with_items: magento_modman_extensions_git
+  with_items: "{{ magento_modman_extensions_git }}"
   when: item.key_file is defined
   local_action: file
   args:
@@ -55,7 +55,7 @@
   become: "{{ lib_action_become_enable|default(omit) }}"
   become_user: "{{ lib_action_become_user|default(omit) }}"
   register: magento_modman_registered_extensions_dirs
-  with_items: magento_modman_extensions_git
+  with_items: "{{ magento_modman_extensions_git }}"
   local_action: stat
   args:
     path: "{{ lib_persistent_data_path_local }}.{{ item.name }}"
@@ -79,9 +79,9 @@
   tags:
     - magento
     - modman
-  become: "{{ lib_action_become_enable|default(omit) }}"
-  become_user: "{{ lib_action_become_user|default(omit) }}"
-  with_items: magento_modman_extensions_git
+  become: "{{ lib_local_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_local_action_become_user|default(omit) }}"
+  with_items: "{{ magento_modman_extensions_git }}"
   local_action: git
   args:
     repo: "{{ item.repo }}"
@@ -102,9 +102,9 @@
   tags:
     - magento
     - modman
-  become: "{{ lib_action_become_enable|default(omit) }}"
-  become_user: "{{ lib_action_become_user|default(omit) }}"
-  with_items: magento_modman_extensions_git
+  become: "{{ lib_local_action_become_enable|default(omit) }}"
+  become_user: "{{ lib_local_action_become_user|default(omit) }}"
+  with_items: "{{ magento_modman_extensions_git }}"
   local_action: command
     git archive --format=tar --output="{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"  {{ item.version|default('HEAD') }}
   args:
@@ -116,7 +116,7 @@
     - modman
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  with_items: magento_modman_extensions_git
+  with_items: "{{ magento_modman_extensions_git }}"
   file:
     state: directory
     path: "{{ item.dest }}/{{ item.name }}"
@@ -130,7 +130,7 @@
     - modman
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  with_items: magento_modman_extensions_git
+  with_items: "{{ magento_modman_extensions_git }}"
   unarchive:
     src: "{{ lib_persistent_data_path_local }}/{{ item.name }}.tar"
     dest: "{{ item.dest }}/{{ item.name }}"
