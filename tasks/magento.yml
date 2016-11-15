@@ -20,8 +20,8 @@
 
 - name: Download magento patch files
   tags: magento
-  with_items: magento_patch_files
-  include: ../../silpion.lib/tasks/get_url.yml
+  with_items: "{{ magento_patch_files }}"
+  include: "{{ magento_path_to_lib_role }}/silpion.lib/tasks/get_url.yml"
   args:
     url: "{{ item.url }}"
     filename: "{{ item.name }}"
@@ -30,7 +30,7 @@
   tags: magento
   become: "{{ lib_action_become_enable }}"
   become_user: "{{ lib_action_become_user }}"
-  with_items: magento_patch_files
+  with_items: "{{ magento_patch_files }}"
   copy:
     src: "{{ lib_persistent_data_path_local }}/{{ item.name }}"
     dest: "{{ magento_root }}/"

@@ -1,3 +1,11 @@
+# 2.1.0
+Anja Siek (4):
+
+* fix permissions
+* rerun generator
+* add vafiable for path to lib role
+* fix  bare variables; fix lib includes
+
 # 2.0.2
 Anja Siek (1):
 
